@@ -19,6 +19,7 @@ public class Player : KinematicBody2D
 			// public float currentJumpForce = 0f;
 			public float currentAccel = 0f;
 			public bool facingRight = true;
+			public bool isCrouching = false;
 
 	Vector2 velocity;
 
@@ -35,14 +36,27 @@ public class Player : KinematicBody2D
 			velocity.y -= jumpForce;
 		}
 
+		if (Input.IsActionPressed("crouch") && IsOnFloor()) {
+			isCrouching = true;
+		} else {
+			isCrouching = false;
+		}
+
+		if (isCrouching) {
+			velocity.x = 0;
+		}
+
 		// moving left and right
 		if (Input.IsActionPressed("move_right")) {
 			if (!facingRight) {
 				velocity.x = 0;
 				facingRight = true;
 			}
-			if (velocity.x < topSpeed) {	
-				currentAccel = accel;  // leaving this assignment in for eventual curves. Could just be accel
+			
+			// eventually write function that adds curve?
+			currentAccel = accel; 
+
+			if (velocity.x < topSpeed && !isCrouching) {
 				velocity.x += currentAccel;
 			}
 		} else if (Input.IsActionPressed("move_left")) {
@@ -50,10 +64,14 @@ public class Player : KinematicBody2D
 				velocity.x = 0;
 				facingRight = false;
 			}
-			if (velocity.x > -topSpeed) {
-				currentAccel = accel;  // leaving this assignment in for eventual curves. Could just be accel
+			
+			// eventually write function that adds curve?
+			currentAccel = accel; 
+			
+			if (velocity.x > -topSpeed && !isCrouching) {
 				velocity.x -= currentAccel;
 			}
+
 		} else {
 			currentAccel = decel;  // leaving this assignment in for eventual curves. Could just be decel
 			if (velocity.x < 0) {
@@ -107,6 +125,8 @@ public class Player : KinematicBody2D
 			sprite.Play("run");
 		} else if (Math.Abs(velocity.x) > 0 && !IsOnFloor()) {
 			sprite.Play("jump");
+		} else if (IsOnFloor() && isCrouching) {
+			sprite.Play("crouch");
 		} else if (IsOnFloor()) {
 			sprite.Play("idle");
 		}
