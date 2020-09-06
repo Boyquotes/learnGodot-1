@@ -8,17 +8,17 @@ public class Player : KinematicBody2D
 {
 	// [Export] public int score = 0;
 
-	// [Export] public float currentSpeed = 0f;
-	[Export] public float topSpeed = 660.0f;
-	[Export] public float currentAccel = 0f;
-	[Export] public float accel = 30f;
-	[Export] public float decel = 45f;
+   [Export] public float topSpeed = 660.0f;
+   [Export] public float accel = 60f;
+   [Export] public float decel = 40f;
 
-	[Export] public int jumpForce = 500;
-	[Export] public float gravity = 1100.0f;
-	[Export] public float maxFallSpeed = 4000.0f;
+   [Export] public float jumpForce = 500f;
+   [Export] public float gravity = 1100.0f;
+   [Export] public float maxFallSpeed = 4000.0f;
 
-			 public bool facingRight = true;
+			// public float currentJumpForce = 0f;
+			public float currentAccel = 0f;
+			public bool facingRight = true;
 
 	Vector2 velocity;
 
@@ -28,12 +28,20 @@ public class Player : KinematicBody2D
 
 	public void MoveInputCheck()
 	{
+		// Jumping
+		// check to see if velocity.y is positive - add a little extra jump force if so. Basically
+		// you don't want to be able to add upward jump force if you are  falling.
+		if (Input.IsActionPressed("jump") && IsOnFloor()) {
+			velocity.y -= jumpForce;
+		}
+
+		// moving left and right
 		if (Input.IsActionPressed("move_right")) {
 			if (!facingRight) {
 				velocity.x = 0;
 				facingRight = true;
 			}
-			if (velocity.x < topSpeed) {
+			if (velocity.x < topSpeed) {	
 				currentAccel = accel;  // leaving this assignment in for eventual curves. Could just be accel
 				velocity.x += currentAccel;
 			}
@@ -73,13 +81,7 @@ public class Player : KinematicBody2D
 
 	public override void _PhysicsProcess(float delta)
 	{
-		// velocity.x = 0;
 		MoveInputCheck();
-		
-		// if you are in the air move faster on x axis
-		// if (!IsOnFloor()){ 
-		// 	velocity.x *= 1.5f;
-		// }
 		
 		velocity = MoveAndSlide(velocity, new Vector2(0, -1));
 		
@@ -88,31 +90,31 @@ public class Player : KinematicBody2D
 			velocity.y += gravity * delta;
 		}
 		
-		// System.Diagnostics.Debug.WriteLine(velocity); // <== Console log <== Console log <== Console log <== Console log  
-		// System.Diagnostics.Debug.WriteLine(currentSpeed); // <== Console log <== Console log <== Console log <== Console log  
-		
-		//	--- animations --- //
-		if (Math.Abs(velocity.x) > 0 && IsOnFloor()) {
-			// set running animation true
-			// System.Diagnostics.Debug.WriteLine("running");
-		}
-		if (velocity.x < 0) {
-			DetermineDirection(true);
-		} else if (velocity.x > 0) {
-			DetermineDirection(false);
-		}
+		System.Diagnostics.Debug.WriteLine(velocity); // <== Console log <== Console log <== Console log <== Console log  		
 
-	}
-	
+		Animate();
+
+	}	
 
 
-	public void DetermineDirection(bool facingLeft)
+	public void Animate()
 	{
-		Sprite sprite = (Sprite)GetNode("sprite");
-		if (facingLeft == true) {
-			sprite.FlipH = true;
-		} else {
+		AnimatedSprite sprite = (AnimatedSprite)GetNode("sprite");
+
+		// determine running / jumping
+		if (Math.Abs(velocity.x) > 300 && IsOnFloor()) {
+			// set running animation true
+			sprite.Play("run");
+		} else if (Math.Abs(velocity.x) > 0 && !IsOnFloor()) {
+			sprite.Play("jump");
+		} else if (IsOnFloor()) {
+			sprite.Play("idle");
+		}
+
+		if (facingRight == true) {
 			sprite.FlipH = false;
+		} else {
+			sprite.FlipH = true;
 		}
 	}
 	
