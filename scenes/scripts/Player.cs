@@ -11,7 +11,7 @@ public class Player : KinematicBody2D
 	[Export] public float speed = 400.0f;
 	[Export] public float dashSpeed = 1.65f;
 	
-	[Export] public int jumpForce = 900;
+	[Export] public int jumpForce = 500;
 	[Export] public float gravity = 800.0f;
 	[Export] public float maxFallSpeed = 4000.0f;
 
@@ -51,7 +51,9 @@ public class Player : KinematicBody2D
 	{
 		velocity.x = 0;
 		GetInput();
-		
+		if (Math.Abs(velocity.y) > 30) { 
+			velocity.x *= dashSpeed;
+		}
 		velocity = MoveAndSlide(velocity, new Vector2(0, -1));
 		
 		//	--- gravity --- //
