@@ -12,7 +12,7 @@ public class Player : KinematicBody2D
 	[Export] public float dashSpeed = 1.65f;
 	
 	[Export] public int jumpForce = 500;
-	[Export] public float gravity = 800.0f;
+	[Export] public float gravity = 1100.0f;
 	[Export] public float maxFallSpeed = 4000.0f;
 
 	Vector2 velocity;
@@ -51,9 +51,13 @@ public class Player : KinematicBody2D
 	{
 		velocity.x = 0;
 		GetInput();
-		if (Math.Abs(velocity.y) > 30) { 
-			velocity.x *= dashSpeed;
+		
+		// if you are in the air move faster on x axis
+//		if (Math.Abs(velocity.y) > 30) {
+		if (!IsOnFloor()){ 
+			velocity.x *= 1.5f;
 		}
+		
 		velocity = MoveAndSlide(velocity, new Vector2(0, -1));
 		
 		//	--- gravity --- //
