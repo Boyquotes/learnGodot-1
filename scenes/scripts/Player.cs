@@ -21,36 +21,27 @@ public class Player : KinematicBody2D
 //	{
 //	}
 
-	public void GetInput()
+	public void MoveInputCheck()
 	{
 		if (Input.IsActionPressed("move_right")) {
 			velocity.x += speed;
 		} else if (Input.IsActionPressed("move_left")) {
 			velocity.x -= speed;
-		} else {
-			velocity.x = 0;
 		}
 		
-		if (Input.IsActionPressed("dash")) {
-			velocity.x *= dashSpeed;
-		}
+		// if (Input.IsActionPressed("dash")) {
+		// 	velocity.x *= dashSpeed;
+		// }
 		
 		if (Input.IsActionPressed("jump") && IsOnFloor()) {
 			velocity.y -= jumpForce;
 		}
-
-//		if (Input.IsActionPressed("dash")) {
-//		}
-
-//		if (Input.IsActionPressed("attack")) {
-//		}
-
 	}
 
 	public override void _PhysicsProcess(float delta)
 	{
 		velocity.x = 0;
-		GetInput();
+		MoveInputCheck();
 		
 		// if you are in the air move faster on x axis
 //		if (Math.Abs(velocity.y) > 30) {
