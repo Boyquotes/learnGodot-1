@@ -6,11 +6,13 @@ using System;
 
 public class Player : KinematicBody2D
 {
-	[Export] public int score = 0;
+	// [Export] public int score = 0;
 
-	[Export] public float speed = 400.0f;
-	[Export] public float dashSpeed = 1.65f;
-	
+	[Export] public float currentSpeed = 10f;
+	[Export] public float topSpeed = 660.0f;
+	[Export] public float accel = 10f;
+	[Export] public float decel = 30f;
+
 	[Export] public int jumpForce = 500;
 	[Export] public float gravity = 1100.0f;
 	[Export] public float maxFallSpeed = 4000.0f;
@@ -21,16 +23,44 @@ public class Player : KinematicBody2D
 //	{
 //	}
 
+
+
 	public void MoveInputCheck()
 	{
 		if (Input.IsActionPressed("move_right")) {
-			velocity.x += speed;
+			if (velocity.x < topSpeed) {
+				currentSpeed += accel;
+				velocity.x += currentSpeed;
+			} else {
+				System.Diagnostics.Debug.WriteLine("topSpeedMaxed");
+				currentSpeed = topSpeed;
+				velocity.x = topSpeed;
+			}
+
 		} else if (Input.IsActionPressed("move_left")) {
-			velocity.x -= speed;
+			if (Math.Abs(velocity.x) < topSpeed) {
+				currentSpeed += accel;
+				velocity.x -= currentSpeed;
+			} else {
+				System.Diagnostics.Debug.WriteLine("topSpeedMaxed");
+				currentSpeed = topSpeed;
+				velocity.x = -topSpeed;
+			}
+
+		} else {
+			if (currentSpeed > 0) {
+				currentSpeed -= decel;
+			}
+
+			if (velocity.x > 0) {
+				velocity.x -= decel;
+			} else if (velocity.x < 0) {
+				velocity.x += decel;
+			}
 		}
 		
 		// if (Input.IsActionPressed("dash")) {
-		// 	velocity.x *= dashSpeed;
+		// 	velocity.x *= 1.65f;
 		// }
 		
 		if (Input.IsActionPressed("jump") && IsOnFloor()) {
@@ -38,9 +68,11 @@ public class Player : KinematicBody2D
 		}
 	}
 
+
+
 	public override void _PhysicsProcess(float delta)
 	{
-		velocity.x = 0;
+		// velocity.x = 0;
 		MoveInputCheck();
 		
 		// if you are in the air move faster on x axis
@@ -56,12 +88,13 @@ public class Player : KinematicBody2D
 			velocity.y += gravity * delta;
 		}
 		
-		System.Diagnostics.Debug.WriteLine(velocity); // <== Console log <== Console log <== Console log <== Console log  
+		// System.Diagnostics.Debug.WriteLine(velocity); // <== Console log <== Console log <== Console log <== Console log  
+		System.Diagnostics.Debug.WriteLine(currentSpeed); // <== Console log <== Console log <== Console log <== Console log  
 		
 		//	--- animations --- //
 		if (Math.Abs(velocity.x) > 0 && IsOnFloor()) {
 			// set running animation true
-			System.Diagnostics.Debug.WriteLine("running");
+			// System.Diagnostics.Debug.WriteLine("running");
 		}
 		if (velocity.x < 0) {
 			DetermineDirection(true);
@@ -71,6 +104,8 @@ public class Player : KinematicBody2D
 
 	}
 	
+
+
 	public void DetermineDirection(bool facingLeft)
 	{
 		Sprite sprite = (Sprite)GetNode("sprite");
