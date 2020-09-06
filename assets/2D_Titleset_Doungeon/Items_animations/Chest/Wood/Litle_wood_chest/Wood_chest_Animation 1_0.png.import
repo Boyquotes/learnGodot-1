@@ -1,0 +1,34 @@
+[remap]
+
+importer="texture"
+type="StreamTexture"
+path="res://.import/Wood_chest_Animation 1_0.png-b70adf6bf47f54dbe2217305e36faa31.stex"
+metadata={
+"vram_texture": false
+}
+
+[deps]
+
+source_file="res://assets/2D_Titleset_Doungeon/Items_animations/Chest/Wood/Litle_wood_chest/Wood_chest_Animation 1_0.png"
+dest_files=[ "res://.import/Wood_chest_Animation 1_0.png-b70adf6bf47f54dbe2217305e36faa31.stex" ]
+
+[params]
+
+compress/mode=0
+compress/lossy_quality=0.7
+compress/hdr_mode=0
+compress/bptc_ldr=0
+compress/normal_map=0
+flags/repeat=0
+flags/filter=true
+flags/mipmaps=false
+flags/anisotropic=false
+flags/srgb=2
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/HDR_as_SRGB=false
+process/invert_color=false
+stream=false
+size_limit=0
+detect_3d=true
+svg/scale=1.0

@@ -1,0 +1,34 @@
+[remap]
+
+importer="texture"
+type="StreamTexture"
+path="res://.import/Dimon_source_file_Animation 1_0.png-4b691ba6561601078d2e8f0b68dbf45d.stex"
+metadata={
+"vram_texture": false
+}
+
+[deps]
+
+source_file="res://assets/2D_Titleset_Doungeon/Items_animations/Chest/Diamon/Dimon_source_file_Animation 1_0.png"
+dest_files=[ "res://.import/Dimon_source_file_Animation 1_0.png-4b691ba6561601078d2e8f0b68dbf45d.stex" ]
+
+[params]
+
+compress/mode=0
+compress/lossy_quality=0.7
+compress/hdr_mode=0
+compress/bptc_ldr=0
+compress/normal_map=0
+flags/repeat=0
+flags/filter=true
+flags/mipmaps=false
+flags/anisotropic=false
+flags/srgb=2
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/HDR_as_SRGB=false
+process/invert_color=false
+stream=false
+size_limit=0
+detect_3d=true
+svg/scale=1.0
