@@ -179,7 +179,7 @@ zoom = Vector2( 2, 2 )
 position = Vector2( 0.667419, 0 )
 frames = SubResource( 26 )
 animation = "crouch"
-frame = 4
+frame = 1
 speed_scale = 3.0
 playing = true
 

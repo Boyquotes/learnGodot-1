@@ -23,6 +23,7 @@ public class Player : KinematicBody2D
 	// public string currentWeapon = "sword";
 	public bool canFire = true;
 	public bool attackAnim = false;
+	public bool attacking = false;
 
 	Vector2 velocity;
 
@@ -32,11 +33,15 @@ public class Player : KinematicBody2D
 
 	public override void _Process(float delta)
 	{
+		// Nodes... there's probably a better way to do this.
+		Area2D wpnArea2D = (Area2D)GetNode("wpn_area_2D");
+		CollisionShape2D hitbox = (CollisionShape2D)GetNode("hitbox");
 		MoveInputCheck();
 		ActionInputCheck();
-		ColliderCheck();
-		// HitBoxAnimator();
-		Animate();
+		HitBoxAnimator(wpnArea2D, hitbox);
+		ColliderCheck(wpnArea2D, hitbox);
+		CharacterAnimator();
+		attacking = false;
 	}
 
 
@@ -52,25 +57,9 @@ public class Player : KinematicBody2D
 	}
 
 
-	public void ColliderCheck()
+	public void ColliderCheck(Area2D wpnArea2D, CollisionShape2D hitbox)
 	{
-		// change weapon collider
-		Area2D wpnArea2D = (Area2D)GetNode("wpn_area_2D");
-		CollisionShape2D hitbox = (CollisionShape2D)GetNode("hitbox");
 
-		if (facingRight) {
-			wpnArea2D.Scale = new Vector2 (1, 1);
-		} else {
-			wpnArea2D.Scale = new Vector2 (-1, 1);
-		}
-
-		if (isCrouching) {
-			hitbox.Scale = new Vector2 (1, 0.75f);
-			hitbox.Position = new Vector2 (0, 28);
-		} else {
-			hitbox.Scale = new Vector2 (1, 1);
-			hitbox.Position = new Vector2 (0, 10);
-		}
 	}
 
 
@@ -145,17 +134,17 @@ public class Player : KinematicBody2D
 
 	public void ActionInputCheck()
 	{
-		Timer cooldownTimer = (Timer)GetNode("timer_cooldown");
+		Timer atkCooldownTimer = (Timer)GetNode("timer_cooldown");
 
-		if (cooldownTimer.IsStopped()) {
+		if (atkCooldownTimer.IsStopped()) {
 			canFire = true;
 		}
 
 		if (Input.IsActionPressed("attack") && canFire == true) {
 			Attack();
-			cooldownTimer.Start();
+			atkCooldownTimer.Start();
 			canFire = false;
-		} else if (Input.IsActionJustReleased("attack") && cooldownTimer.IsStopped()) {
+		} else if (Input.IsActionJustReleased("attack") && atkCooldownTimer.IsStopped()) {
 			canFire = true;
 		}
 	}
@@ -163,12 +152,13 @@ public class Player : KinematicBody2D
 
 	public void Attack()
 	{
+		attacking = true;
 		attackAnim = true;
 		System.Diagnostics.Debug.WriteLine("SWORD ATTACK"); // <== Console log <== Console log <== Console log <== Console log <== Console log <== Console log <== Console log <== Console log  		
 	}
 
 
-	public void Animate()
+	public void CharacterAnimator()
 	{
 		AnimatedSprite sprite = (AnimatedSprite)GetNode("sprite");
 
@@ -195,15 +185,20 @@ public class Player : KinematicBody2D
 	}	
 
 
-	public void HitBoxAnimator()
+	public void HitBoxAnimator(Area2D wpnArea2D, CollisionShape2D hitbox)
 	{
-		// AnimationPlayer colliderAnimator = (AnimationPlayer)GetNode("colliderAnim");
+		if (facingRight) {
+			wpnArea2D.Scale = new Vector2 (1, 1);
+		} else {
+			wpnArea2D.Scale = new Vector2 (-1, 1);
+		}
 
-		// if (isCrouching) {
-		// 	colliderAnimator.Play("crouch");
-		// } 
-		// else {
-			// colliderAnimator.play("idle");
-		// }
+		if (isCrouching) {
+			hitbox.Scale = new Vector2 (1, 0.75f);
+			hitbox.Position = new Vector2 (0, 28);
+		} else {
+			hitbox.Scale = new Vector2 (1, 1);
+			hitbox.Position = new Vector2 (0, 10);
+		}
 	}
 }
