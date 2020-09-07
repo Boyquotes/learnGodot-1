@@ -35,16 +35,25 @@ public class Player : KinematicBody2D
 	{
 		// Reused Nodes... there's probably a better way to do this.
 		Area2D wpnArea2D = (Area2D)GetNode("wpn_area_2D");
-		CollisionShape2D hitbox = (CollisionShape2D)GetNode("hitbox");
+		CollisionShape2D hurtbox = (CollisionShape2D)GetNode("hurtbox");
 
 		MoveInputCheck();
-		ActionInputCheck();
-		HitBoxAnimator(wpnArea2D, hitbox);
-		ColliderCheck(wpnArea2D, hitbox);
+		ActionInputCheck();	
+		HitBoxAnimator(wpnArea2D, hurtbox);
+		// ColliderCheck(wpnArea2D, hitbox);
 		CharacterAnimator();
 		attacking = false;
 	}
 
+	public void _on_wpnHitbox_enter(Area2D wpnHitBox)
+	{
+		System.Diagnostics.Debug.WriteLine("weapon hitbox intersecting");
+	}
+
+	public void _on_hurtbox_enter(Area2D hurtbox)
+	{
+		System.Diagnostics.Debug.WriteLine("hurtbox intersecting");
+	}
 
 	public override void _PhysicsProcess(float delta)
 	{
@@ -58,10 +67,10 @@ public class Player : KinematicBody2D
 	}
 
 
-	public void ColliderCheck(Area2D wpnArea2D, CollisionShape2D hitbox)
-	{
+	// public void ColliderCheck(Area2D wpnArea2D, CollisionShape2D hitbox)
+	// {
 		
-	}
+	// }
 
 
 	public void MoveInputCheck()
@@ -186,7 +195,7 @@ public class Player : KinematicBody2D
 	}	
 
 
-	public void HitBoxAnimator(Area2D wpnArea2D, CollisionShape2D hitbox)
+	public void HitBoxAnimator(Area2D wpnArea2D, CollisionShape2D hurtbox)
 	{
 		if (facingRight) {
 			wpnArea2D.Scale = new Vector2 (1, 1);
@@ -195,11 +204,11 @@ public class Player : KinematicBody2D
 		}
 
 		if (isCrouching) {
-			hitbox.Scale = new Vector2 (1, 0.75f);
-			hitbox.Position = new Vector2 (0, 28);
+			hurtbox.Scale = new Vector2 (1, 0.75f);
+			hurtbox.Position = new Vector2 (0, 28);
 		} else {
-			hitbox.Scale = new Vector2 (1, 1);
-			hitbox.Position = new Vector2 (0, 10);
+			hurtbox.Scale = new Vector2 (1, 1);
+			hurtbox.Position = new Vector2 (0, 10);
 		}
 	}
 }

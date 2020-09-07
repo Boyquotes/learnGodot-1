@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=2]
+[gd_scene load_steps=37 format=2]
 
 [ext_resource path="res://assets/knight/spritesheet_run_3x.png" type="Texture" id=1]
 [ext_resource path="res://scripts/Player.cs" type="Script" id=2]
@@ -70,68 +70,68 @@ region = Rect2( 0, 1440, 408, 288 )
 
 [sub_resource type="AtlasTexture" id=13]
 flags = 4
-atlas = ExtResource( 5 )
-region = Rect2( 816, 0, 408, 288 )
+atlas = ExtResource( 7 )
+region = Rect2( 408, 576, 408, 288 )
 
 [sub_resource type="AtlasTexture" id=14]
 flags = 4
-atlas = ExtResource( 1 )
-region = Rect2( 0, 0, 408, 288 )
+atlas = ExtResource( 7 )
+region = Rect2( 0, 864, 408, 288 )
 
 [sub_resource type="AtlasTexture" id=15]
 flags = 4
-atlas = ExtResource( 1 )
-region = Rect2( 408, 0, 408, 288 )
+atlas = ExtResource( 7 )
+region = Rect2( 408, 864, 408, 288 )
 
 [sub_resource type="AtlasTexture" id=16]
 flags = 4
-atlas = ExtResource( 1 )
-region = Rect2( 0, 288, 408, 288 )
+atlas = ExtResource( 7 )
+region = Rect2( 0, 1152, 408, 288 )
 
 [sub_resource type="AtlasTexture" id=17]
 flags = 4
-atlas = ExtResource( 1 )
-region = Rect2( 408, 288, 408, 288 )
+atlas = ExtResource( 5 )
+region = Rect2( 816, 0, 408, 288 )
 
 [sub_resource type="AtlasTexture" id=18]
 flags = 4
 atlas = ExtResource( 1 )
-region = Rect2( 0, 576, 408, 288 )
+region = Rect2( 0, 0, 408, 288 )
 
 [sub_resource type="AtlasTexture" id=19]
 flags = 4
 atlas = ExtResource( 1 )
-region = Rect2( 408, 576, 408, 288 )
+region = Rect2( 408, 0, 408, 288 )
 
 [sub_resource type="AtlasTexture" id=20]
 flags = 4
 atlas = ExtResource( 1 )
-region = Rect2( 0, 864, 408, 288 )
+region = Rect2( 0, 288, 408, 288 )
 
 [sub_resource type="AtlasTexture" id=21]
 flags = 4
 atlas = ExtResource( 1 )
-region = Rect2( 408, 864, 408, 288 )
+region = Rect2( 408, 288, 408, 288 )
 
 [sub_resource type="AtlasTexture" id=22]
 flags = 4
-atlas = ExtResource( 7 )
-region = Rect2( 408, 576, 408, 288 )
+atlas = ExtResource( 1 )
+region = Rect2( 0, 576, 408, 288 )
 
 [sub_resource type="AtlasTexture" id=23]
 flags = 4
-atlas = ExtResource( 7 )
-region = Rect2( 0, 864, 408, 288 )
+atlas = ExtResource( 1 )
+region = Rect2( 408, 576, 408, 288 )
 
 [sub_resource type="AtlasTexture" id=24]
 flags = 4
-atlas = ExtResource( 7 )
-region = Rect2( 408, 864, 408, 288 )
+atlas = ExtResource( 1 )
+region = Rect2( 0, 864, 408, 288 )
 
 [sub_resource type="AtlasTexture" id=25]
 flags = 4
-atlas = ExtResource( 7 )
-region = Rect2( 0, 1152, 408, 288 )
+atlas = ExtResource( 1 )
+region = Rect2( 408, 864, 408, 288 )
 
 [sub_resource type="SpriteFrames" id=26]
 animations = [ {
@@ -145,24 +145,27 @@ animations = [ {
 "name": "crouch",
 "speed": 5.0
 }, {
-"frames": [ SubResource( 13 ) ],
+"frames": [ SubResource( 13 ), SubResource( 14 ), SubResource( 15 ), SubResource( 16 ) ],
+"loop": false,
+"name": "atk_sword",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 17 ) ],
 "loop": true,
 "name": "jump",
 "speed": 5.0
 }, {
-"frames": [ SubResource( 14 ), SubResource( 15 ), SubResource( 16 ), SubResource( 17 ), SubResource( 18 ), SubResource( 19 ), SubResource( 20 ), SubResource( 21 ) ],
+"frames": [ SubResource( 18 ), SubResource( 19 ), SubResource( 20 ), SubResource( 21 ), SubResource( 22 ), SubResource( 23 ), SubResource( 24 ), SubResource( 25 ) ],
 "loop": true,
 "name": "run",
-"speed": 5.0
-}, {
-"frames": [ SubResource( 22 ), SubResource( 23 ), SubResource( 24 ), SubResource( 25 ) ],
-"loop": false,
-"name": "atk_sword",
 "speed": 5.0
 } ]
 
 [sub_resource type="RectangleShape2D" id=27]
 extents = Vector2( 42.8059, 71.6238 )
+
+[sub_resource type="RectangleShape2D" id=29]
+extents = Vector2( 10.75, 10.2942 )
 
 [sub_resource type="RectangleShape2D" id=28]
 extents = Vector2( 50.8518, 95.5962 )
@@ -179,13 +182,22 @@ zoom = Vector2( 2, 2 )
 position = Vector2( 0.667419, 0 )
 frames = SubResource( 26 )
 animation = "crouch"
-frame = 1
+frame = 4
 speed_scale = 3.0
 playing = true
 
-[node name="hitbox" type="CollisionShape2D" parent="."]
+[node name="hurtbox" type="CollisionShape2D" parent="."]
 position = Vector2( 0, 10 )
 shape = SubResource( 27 )
+
+[node name="hurtboxCollisionWrapper" type="Area2D" parent="hurtbox"]
+
+[node name="hurtboxCollisionShape" type="CollisionShape2D" parent="hurtbox/hurtboxCollisionWrapper"]
+modulate = Color( 1, 0, 0, 1 )
+self_modulate = Color( 1, 0, 0, 1 )
+position = Vector2( 0, -0.330338 )
+scale = Vector2( 4, 7 )
+shape = SubResource( 29 )
 
 [node name="timer_cooldown" type="Timer" parent="."]
 wait_time = 0.25
@@ -196,3 +208,5 @@ one_shot = true
 [node name="wpn_collision2D" type="CollisionShape2D" parent="wpn_area_2D"]
 position = Vector2( 100, -14 )
 shape = SubResource( 28 )
+[connection signal="area_entered" from="hurtbox/hurtboxCollisionWrapper" to="." method="_on_hurtbox_enter"]
+[connection signal="area_entered" from="wpn_area_2D" to="." method="_on_wpnHitbox_enter"]
