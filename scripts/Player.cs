@@ -33,9 +33,10 @@ public class Player : KinematicBody2D
 
 	public override void _Process(float delta)
 	{
-		// Nodes... there's probably a better way to do this.
+		// Reused Nodes... there's probably a better way to do this.
 		Area2D wpnArea2D = (Area2D)GetNode("wpn_area_2D");
 		CollisionShape2D hitbox = (CollisionShape2D)GetNode("hitbox");
+
 		MoveInputCheck();
 		ActionInputCheck();
 		HitBoxAnimator(wpnArea2D, hitbox);
@@ -59,7 +60,7 @@ public class Player : KinematicBody2D
 
 	public void ColliderCheck(Area2D wpnArea2D, CollisionShape2D hitbox)
 	{
-
+		
 	}
 
 
@@ -167,7 +168,7 @@ public class Player : KinematicBody2D
 			if (sprite.Frame == 3) {
 				attackAnim = false;
 			}
-		} else if (Math.Abs(velocity.x) > 300 && IsOnFloor() && !isCrouching) {
+		} else if (Math.Abs(velocity.x) > 100 && IsOnFloor() && !isCrouching) {
 			sprite.Play("run");
 		} else if (!IsOnFloor()) {
 			sprite.Play("jump");
