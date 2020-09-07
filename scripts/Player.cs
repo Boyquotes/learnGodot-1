@@ -34,7 +34,8 @@ public class Player : KinematicBody2D
 	{
 		MoveInputCheck();
 		ActionInputCheck();
-		HitBoxAnimator();
+		ColliderCheck();
+		// HitBoxAnimator();
 		Animate();
 	}
 
@@ -48,6 +49,28 @@ public class Player : KinematicBody2D
 			velocity.y += gravity * delta;
 		}
 		// System.Diagnostics.Debug.WriteLine(velocity); // <== Console log <== Console log <== Console log <== Console log <== Console log <== Console log <== Console log <== Console log  		
+	}
+
+
+	public void ColliderCheck()
+	{
+		// change weapon collider
+		Area2D wpnArea2D = (Area2D)GetNode("wpn_area_2D");
+		CollisionShape2D hitbox = (CollisionShape2D)GetNode("hitbox");
+
+		if (facingRight) {
+			wpnArea2D.Scale = new Vector2 (1, 1);
+		} else {
+			wpnArea2D.Scale = new Vector2 (-1, 1);
+		}
+
+		if (isCrouching) {
+			hitbox.Scale = new Vector2 (1, 0.75f);
+			hitbox.Position = new Vector2 (0, 28);
+		} else {
+			hitbox.Scale = new Vector2 (1, 1);
+			hitbox.Position = new Vector2 (0, 10);
+		}
 	}
 
 
