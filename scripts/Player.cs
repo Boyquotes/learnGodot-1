@@ -6,6 +6,7 @@ using System;
 public class Player : KinematicBody2D
 {
 	// [Export] public int score = 0;
+	public int health = 4;
 
    	public const float topSpeed = 660.0f;
    	public const float accel = 60f;
@@ -27,9 +28,38 @@ public class Player : KinematicBody2D
 
 	Vector2 velocity;
 
-//	public void Ready()
-//	{
-//	}
+	//	public void Ready()
+	//	{
+	//	}
+
+	// Signals
+	[Signal] public delegate void Hit();
+
+	public void _on_wpnHitbox_enter(Area2D wpnHitBox)
+	{
+		// System.Diagnostics.Debug.WriteLine("weapon hitbox intersecting");
+	}
+
+	public void _on_hurtbox_enter(Area2D hurtbox)
+	{
+		System.Diagnostics.Debug.WriteLine("hurtbox intersecting");
+		EmitSignal("Hit");
+		health -= 1;
+    	GetNode<CollisionShape2D>("hurtbox/hurtboxCollisionWrapper/hurtboxCollisionShape").SetDeferred("disabled", true);
+
+		Timer iFrameTimer = (Timer)GetNode("iFrame_timer");
+		iFrameTimer.Start();
+
+		if (health <= 0) {
+			System.Diagnostics.Debug.WriteLine("you dead");
+		}
+	}
+
+	public void _on_iFrames_done()
+	{
+		GetNode<CollisionShape2D>("hurtbox/hurtboxCollisionWrapper/hurtboxCollisionShape").SetDeferred("disabled", false);
+	}
+
 
 	public override void _Process(float delta)
 	{
@@ -40,21 +70,11 @@ public class Player : KinematicBody2D
 		MoveInputCheck();
 		ActionInputCheck();	
 		HitBoxAnimator(wpnArea2D, hurtbox);
-		// ColliderCheck(wpnArea2D, hitbox);
 		CharacterAnimator();
 		attacking = false;
 	}
 
-	public void _on_wpnHitbox_enter(Area2D wpnHitBox)
-	{
-		System.Diagnostics.Debug.WriteLine("weapon hitbox intersecting");
-	}
-
-	public void _on_hurtbox_enter(Area2D hurtbox)
-	{
-		System.Diagnostics.Debug.WriteLine("hurtbox intersecting");
-	}
-
+	
 	public override void _PhysicsProcess(float delta)
 	{
 		velocity = MoveAndSlide(velocity, new Vector2(0, -1));
@@ -63,21 +83,13 @@ public class Player : KinematicBody2D
 		if (velocity.y < maxFallSpeed) {
 			velocity.y += gravity * delta;
 		}
-		// System.Diagnostics.Debug.WriteLine(velocity); // <== Console log <== Console log <== Console log <== Console log <== Console log <== Console log <== Console log <== Console log  		
 	}
-
-
-	// public void ColliderCheck(Area2D wpnArea2D, CollisionShape2D hitbox)
-	// {
-		
-	// }
-
 
 	public void MoveInputCheck()
 	{
 		// Jumping
 		// lets check to see if velocity.y is positive - add a little extra jump force if so. Basically
-		// you don't want to be able to add upward jump force if you are  falling.
+		// you don't want to be able to add upward jump force if you are falling.
 		// oorrr DOUBLE JUMP?!!?
 		if (Input.IsActionPressed("jump") && IsOnFloor()) {
 			velocity.y -= jumpForce;

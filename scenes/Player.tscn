@@ -182,7 +182,7 @@ zoom = Vector2( 2, 2 )
 position = Vector2( 0.667419, 0 )
 frames = SubResource( 26 )
 animation = "crouch"
-frame = 4
+frame = 5
 speed_scale = 3.0
 playing = true
 
@@ -208,5 +208,8 @@ one_shot = true
 [node name="wpn_collision2D" type="CollisionShape2D" parent="wpn_area_2D"]
 position = Vector2( 100, -14 )
 shape = SubResource( 28 )
+
+[node name="iFrame_timer" type="Timer" parent="."]
 [connection signal="area_entered" from="hurtbox/hurtboxCollisionWrapper" to="." method="_on_hurtbox_enter"]
 [connection signal="area_entered" from="wpn_area_2D" to="." method="_on_wpnHitbox_enter"]
+[connection signal="timeout" from="iFrame_timer" to="." method="_on_iFrames_done"]
