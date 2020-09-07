@@ -7,18 +7,22 @@ public class Player : KinematicBody2D
 {
 	// [Export] public int score = 0;
 
-   	[Export] public float topSpeed = 660.0f;
-   	[Export] public float accel = 60f;
-   	[Export] public float decel = 40f;
+   	public const float topSpeed = 660.0f;
+   	public const float accel = 60f;
+   	public const float decel = 40f;
 
-   	[Export] public float jumpForce = 500f;
-   	[Export] public float gravity = 1100.0f;
-  	[Export] public float maxFallSpeed = 4000.0f;
+   	public const float jumpForce = 500f;
+   	public const float gravity = 1100.0f;
+  	public const float maxFallSpeed = 4000.0f;
 
 	// public float currentJumpForce = 0f;
 	public float currentAccel = 0f;
 	public bool facingRight = true;
 	public bool isCrouching = false;
+
+	// public string currentWeapon = "sword";
+	public bool canFire = true;
+	public bool attackAnim = false;
 
 	Vector2 velocity;
 
@@ -26,22 +30,25 @@ public class Player : KinematicBody2D
 //	{
 //	}
 
-	public override void _PhysicsProcess(float delta)
+	public override void _Process(float delta)
 	{
 		MoveInputCheck();
-		
+		ActionInputCheck();
+		HitBoxAnimator();
+		Animate();
+	}
+
+
+	public override void _PhysicsProcess(float delta)
+	{
 		velocity = MoveAndSlide(velocity, new Vector2(0, -1));
 		
 		//	--- gravity --- //
 		if (velocity.y < maxFallSpeed) {
 			velocity.y += gravity * delta;
 		}
-		
-		System.Diagnostics.Debug.WriteLine(velocity); // <== Console log <== Console log <== Console log <== Console log <== Console log <== Console log <== Console log <== Console log  		
-
-		Animate();
-		HitBoxAnimator();
-	}	
+		// System.Diagnostics.Debug.WriteLine(velocity); // <== Console log <== Console log <== Console log <== Console log <== Console log <== Console log <== Console log <== Console log  		
+	}
 
 
 	public void MoveInputCheck()
@@ -49,6 +56,7 @@ public class Player : KinematicBody2D
 		// Jumping
 		// lets check to see if velocity.y is positive - add a little extra jump force if so. Basically
 		// you don't want to be able to add upward jump force if you are  falling.
+		// oorrr DOUBLE JUMP?!!?
 		if (Input.IsActionPressed("jump") && IsOnFloor()) {
 			velocity.y -= jumpForce;
 		}
@@ -59,10 +67,6 @@ public class Player : KinematicBody2D
 		} else {
 			isCrouching = false;
 		}
-
-		// if (isCrouching) {
-		// 	velocity.x = 0;
-		// }
 
 		// Moving left and right
 		if (Input.IsActionPressed("move_right")) {
@@ -97,6 +101,7 @@ public class Player : KinematicBody2D
 		}
 	}
 
+
 	public void VelocityToZero(float modifier)
 	{
 		currentAccel = decel * modifier; // eventually write function that adds curve instead of just assigning?
@@ -115,20 +120,28 @@ public class Player : KinematicBody2D
 	}
 
 
-	public void HitBoxAnimator()
+	public void ActionInputCheck()
 	{
-		// CollisionShape2D collider = (CollisionShape2D)GetNode("collider");
-			// System.Diagnostics.Debug.WriteLine(collider.Shape); // <== Console log <== Console log <== Console log <== Console log <== Console log <== Console log <== Console log 
+		Timer cooldownTimer = (Timer)GetNode("timer_cooldown");
 
-		// Shape2D shape = collider.GetShape();
+		if (cooldownTimer.IsStopped()) {
+			canFire = true;
+		}
 
-			// Color myColor = new Color("#ff0000");
-			// RID rid = Player.GetId();
-			// collider.Shape.Draw(rid, new Color("#ffb2d90a"));
+		if (Input.IsActionPressed("attack") && canFire == true) {
+			Attack();
+			cooldownTimer.Start();
+			canFire = false;
+		} else if (Input.IsActionJustReleased("attack") && cooldownTimer.IsStopped()) {
+			canFire = true;
+		}
+	}
 
-		// if (isCrouching) {
-			
-		// }
+
+	public void Attack()
+	{
+		attackAnim = true;
+		System.Diagnostics.Debug.WriteLine("SWORD ATTACK"); // <== Console log <== Console log <== Console log <== Console log <== Console log <== Console log <== Console log <== Console log  		
 	}
 
 
@@ -136,8 +149,12 @@ public class Player : KinematicBody2D
 	{
 		AnimatedSprite sprite = (AnimatedSprite)GetNode("sprite");
 
-		// determine running / jumping
-		if (Math.Abs(velocity.x) > 300 && IsOnFloor() && !isCrouching) {
+		if (attackAnim == true) {
+			sprite.Play("atk_sword");
+			if (sprite.Frame == 3) {
+				attackAnim = false;
+			}
+		} else if (Math.Abs(velocity.x) > 300 && IsOnFloor() && !isCrouching) {
 			sprite.Play("run");
 		} else if (!IsOnFloor()) {
 			sprite.Play("jump");
@@ -153,5 +170,17 @@ public class Player : KinematicBody2D
 			sprite.FlipH = true;
 		}
 	}	
-}
 
+
+	public void HitBoxAnimator()
+	{
+		// AnimationPlayer colliderAnimator = (AnimationPlayer)GetNode("colliderAnim");
+
+		// if (isCrouching) {
+		// 	colliderAnimator.Play("crouch");
+		// } 
+		// else {
+			// colliderAnimator.play("idle");
+		// }
+	}
+}
