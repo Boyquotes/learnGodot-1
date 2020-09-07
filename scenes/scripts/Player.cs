@@ -60,9 +60,9 @@ public class Player : KinematicBody2D
 			isCrouching = false;
 		}
 
-		if (isCrouching) {
-			velocity.x = 0;
-		}
+		// if (isCrouching) {
+		// 	velocity.x = 0;
+		// }
 
 		// Moving left and right
 		if (Input.IsActionPressed("move_right")) {
@@ -75,6 +75,8 @@ public class Player : KinematicBody2D
 
 			if (velocity.x < topSpeed && !isCrouching) {
 				velocity.x += currentAccel;
+			} else if (isCrouching) {
+				VelocityToZero(.5f);
 			}
 		} else if (Input.IsActionPressed("move_left")) {
 			if (facingRight) {
@@ -86,21 +88,28 @@ public class Player : KinematicBody2D
 			
 			if (velocity.x > -topSpeed && !isCrouching) {
 				velocity.x -= currentAccel;
+			} else if (isCrouching) {
+				VelocityToZero(.5f);
 			}
 
 		} else {
-			currentAccel = decel; // eventually write function that adds curve instead of just assigning?
+			VelocityToZero(1f);
+		}
+	}
 
+	public void VelocityToZero(float modifier)
+	{
+		currentAccel = decel * modifier; // eventually write function that adds curve instead of just assigning?
+
+		if (velocity.x < 0) {
+			velocity.x += currentAccel;
+			if (velocity.x > 0) {
+				velocity.x = 0;
+			}
+		} else if (velocity.x > 0) {
+			velocity.x -= currentAccel;
 			if (velocity.x < 0) {
-				velocity.x += currentAccel;
-				if (velocity.x > 0) {
-					velocity.x = 0;
-				}
-			} else if (velocity.x > 0) {
-				velocity.x -= currentAccel;
-				if (velocity.x < 0) {
-					velocity.x = 0;
-				}
+				velocity.x = 0;
 			}
 		}
 	}
@@ -128,7 +137,7 @@ public class Player : KinematicBody2D
 		AnimatedSprite sprite = (AnimatedSprite)GetNode("sprite");
 
 		// determine running / jumping
-		if (Math.Abs(velocity.x) > 300 && IsOnFloor()) {
+		if (Math.Abs(velocity.x) > 300 && IsOnFloor() && !isCrouching) {
 			sprite.Play("run");
 		} else if (!IsOnFloor()) {
 			sprite.Play("jump");
