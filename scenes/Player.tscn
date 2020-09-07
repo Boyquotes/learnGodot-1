@@ -148,7 +148,7 @@ zoom = Vector2( 2, 2 )
 [node name="sprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 22 )
 animation = "crouch"
-frame = 5
+frame = 3
 speed_scale = 3.0
 playing = true
 

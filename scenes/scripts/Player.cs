@@ -7,18 +7,18 @@ public class Player : KinematicBody2D
 {
 	// [Export] public int score = 0;
 
-   [Export] public float topSpeed = 660.0f;
-   [Export] public float accel = 60f;
-   [Export] public float decel = 40f;
+   	[Export] public float topSpeed = 660.0f;
+   	[Export] public float accel = 60f;
+   	[Export] public float decel = 40f;
 
-   [Export] public float jumpForce = 500f;
-   [Export] public float gravity = 1100.0f;
-   [Export] public float maxFallSpeed = 4000.0f;
+   	[Export] public float jumpForce = 500f;
+   	[Export] public float gravity = 1100.0f;
+  	[Export] public float maxFallSpeed = 4000.0f;
 
-			// public float currentJumpForce = 0f;
-			public float currentAccel = 0f;
-			public bool facingRight = true;
-			public bool isCrouching = false;
+	// public float currentJumpForce = 0f;
+	public float currentAccel = 0f;
+	public bool facingRight = true;
+	public bool isCrouching = false;
 
 	Vector2 velocity;
 
@@ -130,7 +130,7 @@ public class Player : KinematicBody2D
 		// determine running / jumping
 		if (Math.Abs(velocity.x) > 300 && IsOnFloor()) {
 			sprite.Play("run");
-		} else if (Math.Abs(velocity.x) > 0 && !IsOnFloor()) {
+		} else if (!IsOnFloor()) {
 			sprite.Play("jump");
 		} else if (IsOnFloor() && isCrouching) {
 			sprite.Play("crouch");
