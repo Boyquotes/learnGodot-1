@@ -111,9 +111,24 @@ public class Player : KinematicBody2D
 		System.Diagnostics.Debug.WriteLine(velocity); // <== Console log <== Console log <== Console log <== Console log  		
 
 		Animate();
-
+		HitBoxAnimator();
 	}	
 
+	public void HitBoxAnimator()
+	{
+		// CollisionShape2D collider = (CollisionShape2D)GetNode("collider");
+			// System.Diagnostics.Debug.WriteLine(collider.Shape); // <== Console log <== Console log <== Console log <== Console log  		
+
+		// Shape2D shape = collider.GetShape();
+
+			// Color myColor = new Color("#ff0000");
+			// RID rid = Player.GetId();
+			// collider.Shape.Draw(rid, new Color("#ffb2d90a"));
+
+		// if (isCrouching) {
+			
+		// }
+	}
 
 	public void Animate()
 	{
