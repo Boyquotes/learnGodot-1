@@ -1,7 +1,6 @@
 using Godot;
 using System;
 
-// ctrl + k comments ;)
 // System.Diagnostics.Debug.WriteLine("this console logs");
 
 public class Player : KinematicBody2D
@@ -27,15 +26,34 @@ public class Player : KinematicBody2D
 //	{
 //	}
 
+	public override void _PhysicsProcess(float delta)
+	{
+		MoveInputCheck();
+		
+		velocity = MoveAndSlide(velocity, new Vector2(0, -1));
+		
+		//	--- gravity --- //
+		if (velocity.y < maxFallSpeed) {
+			velocity.y += gravity * delta;
+		}
+		
+		System.Diagnostics.Debug.WriteLine(velocity); // <== Console log <== Console log <== Console log <== Console log <== Console log <== Console log <== Console log <== Console log  		
+
+		Animate();
+		HitBoxAnimator();
+	}	
+
+
 	public void MoveInputCheck()
 	{
 		// Jumping
-		// check to see if velocity.y is positive - add a little extra jump force if so. Basically
+		// lets check to see if velocity.y is positive - add a little extra jump force if so. Basically
 		// you don't want to be able to add upward jump force if you are  falling.
 		if (Input.IsActionPressed("jump") && IsOnFloor()) {
 			velocity.y -= jumpForce;
 		}
 
+		// Crouching
 		if (Input.IsActionPressed("crouch") && IsOnFloor()) {
 			isCrouching = true;
 		} else {
@@ -46,15 +64,14 @@ public class Player : KinematicBody2D
 			velocity.x = 0;
 		}
 
-		// moving left and right
+		// Moving left and right
 		if (Input.IsActionPressed("move_right")) {
 			if (!facingRight) {
 				velocity.x = 0;
 				facingRight = true;
 			}
 			
-			// eventually write function that adds curve?
-			currentAccel = accel; 
+			currentAccel = accel; // eventually write function that adds curve instead of just assigning?
 
 			if (velocity.x < topSpeed && !isCrouching) {
 				velocity.x += currentAccel;
@@ -65,15 +82,15 @@ public class Player : KinematicBody2D
 				facingRight = false;
 			}
 			
-			// eventually write function that adds curve?
-			currentAccel = accel; 
+			currentAccel = accel; // eventually write function that adds curve instead of just assigning?
 			
 			if (velocity.x > -topSpeed && !isCrouching) {
 				velocity.x -= currentAccel;
 			}
 
 		} else {
-			currentAccel = decel;  // leaving this assignment in for eventual curves. Could just be decel
+			currentAccel = decel; // eventually write function that adds curve instead of just assigning?
+
 			if (velocity.x < 0) {
 				velocity.x += currentAccel;
 				if (velocity.x > 0) {
@@ -86,38 +103,13 @@ public class Player : KinematicBody2D
 				}
 			}
 		}
-		// System.Diagnostics.Debug.WriteLine(velocity.x); // <== Console log <== Console log <== Console log <== Console log  
 	}
 
-
-		
-	// 	if (Input.IsActionPressed("jump") && IsOnFloor()) {
-	// 		velocity.y -= jumpForce;
-	// 	}
-
-
-
-	public override void _PhysicsProcess(float delta)
-	{
-		MoveInputCheck();
-		
-		velocity = MoveAndSlide(velocity, new Vector2(0, -1));
-		
-		//	--- gravity --- //
-		if (velocity.y < maxFallSpeed) {
-			velocity.y += gravity * delta;
-		}
-		
-		System.Diagnostics.Debug.WriteLine(velocity); // <== Console log <== Console log <== Console log <== Console log  		
-
-		Animate();
-		HitBoxAnimator();
-	}	
 
 	public void HitBoxAnimator()
 	{
 		// CollisionShape2D collider = (CollisionShape2D)GetNode("collider");
-			// System.Diagnostics.Debug.WriteLine(collider.Shape); // <== Console log <== Console log <== Console log <== Console log  		
+			// System.Diagnostics.Debug.WriteLine(collider.Shape); // <== Console log <== Console log <== Console log <== Console log <== Console log <== Console log <== Console log 
 
 		// Shape2D shape = collider.GetShape();
 
@@ -130,13 +122,13 @@ public class Player : KinematicBody2D
 		// }
 	}
 
+
 	public void Animate()
 	{
 		AnimatedSprite sprite = (AnimatedSprite)GetNode("sprite");
 
 		// determine running / jumping
 		if (Math.Abs(velocity.x) > 300 && IsOnFloor()) {
-			// set running animation true
 			sprite.Play("run");
 		} else if (Math.Abs(velocity.x) > 0 && !IsOnFloor()) {
 			sprite.Play("jump");
@@ -151,14 +143,6 @@ public class Player : KinematicBody2D
 		} else {
 			sprite.FlipH = true;
 		}
-	}
-	
-//	--- determine what the char is doing and animate based on that --- //
-//	public void ActionAnimator()
-//	{
-//
-//	}
-	
+	}	
 }
-
 
