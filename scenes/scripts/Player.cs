@@ -32,7 +32,7 @@ public class Player : KinematicBody2D
 				currentSpeed += accel;
 				velocity.x += currentSpeed;
 			} else {
-				System.Diagnostics.Debug.WriteLine("topSpeedMaxed");
+				// System.Diagnostics.Debug.WriteLine("topSpeedMaxed");
 				currentSpeed = topSpeed;
 				velocity.x = topSpeed;
 			}
@@ -42,7 +42,7 @@ public class Player : KinematicBody2D
 				currentSpeed += accel;
 				velocity.x -= currentSpeed;
 			} else {
-				System.Diagnostics.Debug.WriteLine("topSpeedMaxed");
+				// System.Diagnostics.Debug.WriteLine("topSpeedMaxed");
 				currentSpeed = topSpeed;
 				velocity.x = -topSpeed;
 			}
