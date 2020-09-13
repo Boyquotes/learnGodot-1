@@ -34,6 +34,7 @@ public class Player : KinematicBody2D
 
 	// Signals
 	[Signal] public delegate void Hit();
+	[Signal] public delegate void PlayerDeath();
 
 	public void _on_wpnHitbox_enter(Area2D wpnHitBox)
 	{
@@ -51,7 +52,7 @@ public class Player : KinematicBody2D
 		iFrameTimer.Start();
 
 		if (health <= 0) {
-			System.Diagnostics.Debug.WriteLine("you dead");
+			Die();	
 		}
 	}
 
@@ -60,6 +61,11 @@ public class Player : KinematicBody2D
 		GetNode<CollisionShape2D>("hurtbox/hurtboxCollisionWrapper/hurtboxCollisionShape").SetDeferred("disabled", false);
 	}
 
+	public void Die()
+	{
+		System.Diagnostics.Debug.WriteLine("you ded");
+		EmitSignal("PlayerDeath");
+	}
 
 	public override void _Process(float delta)
 	{
